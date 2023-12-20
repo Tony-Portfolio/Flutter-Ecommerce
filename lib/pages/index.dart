@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import './homepage/home.dart';
 import './profilepage/profile.dart';
+import './cartpage/cart.dart';
 
 class Index extends StatefulWidget {
   const Index({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _IndexState extends State<Index> {
   static List<Widget> display = [
     Home(),
     Home(),
-    Home(),
+    Cart(),
     Profile(),
   ];
   int selected = 0;

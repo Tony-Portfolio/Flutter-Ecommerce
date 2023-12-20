@@ -52,8 +52,26 @@ class _DetailState extends State<Detail> {
     );
   }
 
+  Future<void> increment(int productId, int quantityToAdd) async {
+    print('ID: $productId QTY: $quantityToAdd');
+
+    try {
+      final upsertResponse = await supabase
+          .from('cart')
+          .upsert({'product_id': productId, 'quantity': quantityToAdd});
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Widget buildProductDetails(product) {
     final item = product[0];
+    final int id = item["product_id"];
+    final authSession = supabase.auth.currentSession;
+    if (authSession != null && authSession.user != null) {
+      final userId = authSession.user!.id;
+      print('ID NYA : $userId');
+    }
     List<Map<String, dynamic>> productVariations =
         List<Map<String, dynamic>>.from(item['productVariation']);
 
@@ -81,19 +99,23 @@ class _DetailState extends State<Detail> {
               item['product_name'].toString(),
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 6),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/star-solid.svg',
-                    color: Colors.orange,
-                    width: 14,
-                    height: 14,
-                  ),
-                ],
-              ),
+            Text(
+              '\$${item['price'].toString()}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+            // Container(
+            //   margin: const EdgeInsets.only(bottom: 6),
+            //   child: Row(
+            //     children: [
+            //       SvgPicture.asset(
+            //         'assets/star-solid.svg',
+            //         color: Colors.orange,
+            //         width: 14,
+            //         height: 14,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Divider(
               color: Color(0xffe3e3e3),
               thickness: 2,
@@ -133,14 +155,6 @@ class _DetailState extends State<Detail> {
                           fontSize: 14,
                         ),
                       ),
-                      Text(
-                        'Colors',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
                     ],
                   ),
                   SizedBox(width: 20),
@@ -164,15 +178,6 @@ class _DetailState extends State<Detail> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      SizedBox(height: 4),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        children: productVariations
-                            .map<Widget>((variation) =>
-                                _buildColorIndicator(variation['color']))
-                            .toList(),
                       ),
                     ],
                   ),
@@ -213,30 +218,15 @@ class _DetailState extends State<Detail> {
                     ),
                     Text(
                       // "\$" + numFormat.format((product.price * 10).toInt()),
-                      '\$0.00',
+                      '\$${item["price"]}',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
                 InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Product Added to Cart'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                  onTap: () async {
+                    increment(id, 1);
                   },
                   highlightColor: Colors.white,
                   child: Container(
@@ -271,42 +261,6 @@ class _DetailState extends State<Detail> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildColorIndicator(color) {
-    if (color == '') {
-      return Text('');
-    }
-    Color getColorByName(String colorName) {
-      switch (colorName.toLowerCase()) {
-        case 'black':
-          return Colors.black;
-        case 'red':
-          return Colors.red;
-        case 'gray':
-          return Colors.grey;
-        case 'green':
-          return Colors.green;
-        case 'blue':
-          return Colors.blue;
-        case 'orange':
-          return Colors.orange;
-        default:
-          return Colors
-              .black; // Default to black if the color name is not recognized
-      }
-    }
-
-    print('EACH COLOR $color');
-
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: getColorByName(color),
       ),
     );
   }
