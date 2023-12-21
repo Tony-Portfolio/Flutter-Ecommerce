@@ -21,12 +21,62 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-   - assets/
-  #  - images/a_dot_ham.jpeg
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+    - assets/
+  fonts:
+    - family: 'Product Sans'
+      fonts:
+        - asset: 'fonts/product-sans/Product Sans Regular.ttf'
+        - asset: 'fonts/product-sans/Product Sans Bold.ttf'
+          style: normal
+        - asset: 'fonts/product-sans/Product Sans Bold Italic.ttf'
+          style: italic
+        - asset: 'fonts/product-sans/Product Sans Italic.ttf'
+          style: italic
+    - family: 'Inter'
+      fonts:
+        - asset: 'fonts/Inter/Inter-Black.ttf'
+          weight: 900
+        - asset: 'fonts/Inter/Inter-Bold.ttf'
+          weight: 700
+        - asset: 'fonts/Inter/Inter-ExtraBold.ttf'
+          weight: 800
+        - asset: 'fonts/Inter/Inter-ExtraLight.ttf'
+          weight: 200
+        - asset: 'fonts/Inter/Inter-Light.ttf'
+          weight: 300
+        - asset: 'fonts/Inter/Inter-Medium.ttf'
+          weight: 500
+        - asset: 'fonts/Inter/Inter-Regular.ttf'
+        - asset: 'fonts/Inter/Inter-SemiBold.ttf'
+          weight: 600
+        - asset: 'fonts/Inter/Inter-Thin.ttf'
+          weight: 100
+    - family: Lato
+      fonts:
+        - asset: fonts/lato/Lato-Black.ttf
+          weight: 900
+        - asset: fonts/lato/Lato-BlackItalic.ttf
+          weight: 900
+          style: italic
+        - asset: fonts/lato/Lato-Bold.ttf
+          weight: 700
+        - asset: fonts/lato/Lato-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: fonts/lato/Lato-Italic.ttf
+          style: italic
+        - asset: fonts/lato/Lato-Light.ttf
+          weight: 300
+        - asset: fonts/lato/Lato-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: fonts/lato/Lato-Regular.ttf
+        - asset: fonts/lato/Lato-Thin.ttf
+          weight: 100
+        - asset: fonts/lato/Lato-ThinItalic.ttf
+          weight: 100
+          style: italic
+
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

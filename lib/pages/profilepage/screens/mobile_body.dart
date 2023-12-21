@@ -42,8 +42,8 @@ class _MobileScreenState extends State<MobileScreen> {
                 Text('rakaoktoramadhan@gmail.com',
                     style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey)),
+                        color: Colors.grey,
+                        fontWeight: FontWeight.normal)),
               ],
             ),
           ),
@@ -60,7 +60,9 @@ class _MobileScreenState extends State<MobileScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                  child: Text('Account'),
+                  child: Text('Account',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                 ),
                 Divider(
                   color: Color(0xFFF1F2F1),
@@ -68,7 +70,9 @@ class _MobileScreenState extends State<MobileScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                  child: Text('Shipping Address'),
+                  child: Text('Shipping Address',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                 ),
                 Divider(
                   color: Color(0xFFF1F2F1),
@@ -76,7 +80,9 @@ class _MobileScreenState extends State<MobileScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                  child: Text('Payment Methods'),
+                  child: Text('Payment Methods',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                 ),
                 Divider(
                   color: Color(0xFFF1F2F1),
@@ -84,13 +90,17 @@ class _MobileScreenState extends State<MobileScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                  child: Text('Preferences'),
+                  child: Text('Preferences',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                 ),
                 Divider(
                   color: Color(0xFFF1F2F1),
                   thickness: 2,
                 ),
-                Text('Sign Out'),
+                Text('Sign Out',
+                    style:
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
               ],
             ),
           ),

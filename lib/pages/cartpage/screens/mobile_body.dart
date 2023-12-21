@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../supabase/supabase.dart';
 
 class MobileScreen extends StatefulWidget {
@@ -12,6 +13,7 @@ class _MobileScreenState extends State<MobileScreen> {
   late Future _cartData;
   late List<bool> isCheckedList;
   late List<int> quantityList;
+  late List<CheckedCartItem> checkedItems;
 
   @override
   void initState() {
@@ -19,6 +21,36 @@ class _MobileScreenState extends State<MobileScreen> {
     _cartData = _initialCart();
     isCheckedList = [];
     quantityList = [];
+    _cartData.then((data) {
+      checkedItems = List.generate(
+          data.length,
+          (index) => CheckedCartItem(
+              item: data[index], isChecked: false, quantity: 1));
+    });
+  }
+
+  List<CheckedCartItem> getCheckedItems() {
+    List<CheckedCartItem> result = [];
+
+    for (int i = 0; i < checkedItems.length; i++) {
+      if (checkedItems[i].isChecked) {
+        // Create a copy of the CheckedCartItem with the updated quantity
+        CheckedCartItem checkedItem = CheckedCartItem(
+          item: checkedItems[i].item,
+          isChecked: true,
+          quantity: quantityList[i],
+        );
+
+        result.add(checkedItem);
+      }
+    }
+
+    for (CheckedCartItem item in result) {
+      print('isChecked: ${item.isChecked}, Quantity: ${item.quantity}');
+      print(item.item);
+    }
+
+    return result;
   }
 
   Future _initialCart() async {
@@ -61,100 +93,187 @@ class _MobileScreenState extends State<MobileScreen> {
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(child: Text('No data available.'));
             } else {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final item = snapshot.data![index];
-                  final product = item['product'];
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final item = snapshot.data![index];
+                        final product = item['product'];
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.all(4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Checkbox(
-                              value: isCheckedList[index],
-                              onChanged: (value) {
-                                setState(() {
-                                  isCheckedList[index] = value ?? false;
-                                });
-                              },
-                            ),
                             Container(
-                              child: Image.network(
-                                'https://midlsoyjkxifqakotayb.supabase.co/storage/v1/object/public/data${product['thumbnail']}',
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4),
-                                      child: Text(product['product_name'],
+                              margin: const EdgeInsets.all(4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Checkbox(
+                                    value: checkedItems[index].isChecked,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        checkedItems[index].isChecked =
+                                            value ?? false;
+                                      });
+                                      print(
+                                          'Value Change : ${getCheckedItems()}');
+                                    },
+                                  ),
+                                  Container(
+                                    child: Image.network(
+                                      'https://midlsoyjkxifqakotayb.supabase.co/storage/v1/object/public/data${product['thumbnail']}',
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Container(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4),
+                                            child: Text(product['product_name'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                )),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4),
+                                            child: Text(product['description']),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4),
+                                            child: Text(
+                                                'Stock Available : ${product['stock']}'),
+                                          ),
+                                          Row(
+                                            children: [
+                                              IconButton(
+                                                icon: Icon(Icons.remove),
+                                                onPressed: () {
+                                                  if (quantityList[index] > 1) {
+                                                    setState(() {
+                                                      quantityList[index]--;
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                              Container(
+                                                width: 20,
+                                                child: Center(
+                                                    child: Text(
+                                                        '${quantityList[index]}')),
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.add),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (quantityList[index] <
+                                                        product['stock']) {
+                                                      quantityList[index]++;
+                                                    } else {
+                                                      // Optionally, you can show a message or handle the case
+                                                      // where the maximum stock is reached.
+                                                      // For now, I'm just printing a message to the console.
+                                                      print(
+                                                          'Maximum stock reached for ${product['product_name']}');
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .center, // Align children vertically centered
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '\$${product['price']}',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                          )),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4),
-                                      child: Text(product['description']),
-                                    ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(Icons.remove),
-                                          onPressed: () {
-                                            if (quantityList[index] > 1) {
-                                              setState(() {
-                                                quantityList[index]--;
-                                              });
-                                            }
-                                          },
-                                        ),
-                                        Text('${quantityList[index]}'),
-                                        IconButton(
-                                          icon: Icon(Icons.add),
-                                          onPressed: () {
-                                            setState(() {
-                                              quantityList[index]++;
-                                            });
-                                          },
+                                            fontSize: 15,
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Text('\$${product['price']}',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17)),
-                            ),
                           ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CheckoutButton(
+                      onPressed: () {
+                        // Handle checkout logic here
+                        print('Checkout button pressed!');
+                      },
+                    ),
+                  ),
+                ],
               );
             }
           },
+        ),
+      ),
+    );
+  }
+}
+
+class CheckedCartItem {
+  final Map item;
+  bool isChecked;
+  int quantity;
+
+  CheckedCartItem(
+      {required this.item, this.isChecked = false, this.quantity = 1});
+}
+
+class CheckoutButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  CheckoutButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        primary: Colors.orange,
+        minimumSize: Size(double.infinity, 0), // Set minimumSize for full width
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        child: Text(
+          'Checkout',
+          style: TextStyle(color: Colors.white),
         ),
       ),
     );

@@ -16,6 +16,7 @@ class _IndexState extends State<Index> {
   static List<Widget> display = [
     Home(),
     Home(),
+    Home(),
     Cart(),
     Profile(),
   ];
@@ -31,6 +32,9 @@ class _IndexState extends State<Index> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Inter',
+      ),
       home: Scaffold(
         body: Column(
           children: [
@@ -41,7 +45,7 @@ class _IndexState extends State<Index> {
               color: Colors.white,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   LinkButtons(
                     text: 'Shop',
@@ -58,18 +62,25 @@ class _IndexState extends State<Index> {
                     onTap: () => onItemTapped(1),
                   ),
                   LinkButtons(
+                    text: 'New',
+                    url: '/',
+                    svg: 'assets/circle-plus-solid.svg',
+                    active: selected == 2 ? 'true' : 'false',
+                    onTap: () => onItemTapped(2),
+                  ),
+                  LinkButtons(
                     text: 'Cart',
                     url: '/',
                     svg: 'assets/basket-shopping-solid.svg',
-                    active: selected == 2 ? 'true' : 'false',
-                    onTap: () => onItemTapped(2),
+                    active: selected == 3 ? 'true' : 'false',
+                    onTap: () => onItemTapped(3),
                   ),
                   LinkButtons(
                     text: 'Profile',
                     url: '/',
                     svg: 'assets/user-solid.svg',
-                    active: selected == 3 ? 'true' : 'false',
-                    onTap: () => onItemTapped(3),
+                    active: selected == 4 ? 'true' : 'false',
+                    onTap: () => onItemTapped(4),
                   ),
                 ],
               ),
@@ -99,52 +110,55 @@ class LinkButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
+    return InkWell(
         onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Container(
-            margin: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: active == 'true' ? Color(0xFFF1F2F1) : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
-                    child: SvgPicture.asset(
-                      svg,
-                      height: 18,
-                      width: 18,
-                      color:
-                          active == 'true' ? Colors.orange : Color(0xFF5F5E5F),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Container(
+                margin: const EdgeInsets.all(4.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      // decoration: BoxDecoration(
+                      //   color: active == 'true' ? Color(0xFFF1F2F1) : Colors.white,
+                      //   borderRadius: BorderRadius.circular(8),
+                      // ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+                        child: SvgPicture.asset(
+                          svg,
+                          height: 18,
+                          width: 18,
+                          color: active == 'true'
+                              ? Colors.orange
+                              : Color(0xFF5F5E5F),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    text,
-                    style: TextStyle(
-                      color: Color(0xFF5F5E5F),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
+                    Container(
+                      margin: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        text,
+                        style: TextStyle(
+                          color: active == 'true'
+                              ? Colors.orange
+                              : Color(0xFF5F5E5F),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
