@@ -24,7 +24,7 @@ class _DetailState extends State<Detail> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth == mobileWidth) {
+        if (constraints.maxWidth > mobileWidth) {
           return widget.mobileScreen;
         } else if (constraints.maxWidth > desktopWidth) {
           return widget.desktopScreen;

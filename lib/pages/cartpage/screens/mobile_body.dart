@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../supabase/supabase.dart';
+import '../../checkoutpage/checkout.dart';
 
 class MobileScreen extends StatefulWidget {
   const MobileScreen({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class _MobileScreenState extends State<MobileScreen> {
   late List<bool> isCheckedList;
   late List<int> quantityList;
   late List<CheckedCartItem> checkedItems;
+  late List checkoutItems;
 
   @override
   void initState() {
@@ -27,14 +29,15 @@ class _MobileScreenState extends State<MobileScreen> {
           (index) => CheckedCartItem(
               item: data[index], isChecked: false, quantity: 1));
     });
+    checkoutItems = [];
   }
 
   List<CheckedCartItem> getCheckedItems() {
     List<CheckedCartItem> result = [];
+    checkoutItems = [];
 
     for (int i = 0; i < checkedItems.length; i++) {
       if (checkedItems[i].isChecked) {
-        // Create a copy of the CheckedCartItem with the updated quantity
         CheckedCartItem checkedItem = CheckedCartItem(
           item: checkedItems[i].item,
           isChecked: true,
@@ -46,8 +49,9 @@ class _MobileScreenState extends State<MobileScreen> {
     }
 
     for (CheckedCartItem item in result) {
-      print('isChecked: ${item.isChecked}, Quantity: ${item.quantity}');
+      // print('isChecked: ${item.isChecked}, Quantity: ${item.quantity}');
       print(item.item);
+      checkoutItems.add(item.item);
     }
 
     return result;
@@ -228,8 +232,7 @@ class _MobileScreenState extends State<MobileScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: CheckoutButton(
                       onPressed: () {
-                        // Handle checkout logic here
-                        print('Checkout button pressed!');
+                        Navigator.of(context).push(_createRoute(checkoutItems));
                       },
                     ),
                   ),
@@ -278,4 +281,23 @@ class CheckoutButton extends StatelessWidget {
       ),
     );
   }
+}
+
+Route _createRoute(List cartItem) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        Checkout(checkoutItems: cartItem),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
